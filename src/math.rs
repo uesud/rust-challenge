@@ -22,3 +22,20 @@ fn sum_of_mutiple(a: u32, n: u32) -> u64 {
 fn test_sum_of_multiple() {
     assert_eq!(18, sum_of_mutiple(3, 3));
 }
+
+/// 整数 a, b の最大公約数を求める
+pub fn gcd(a: u32, b: u32) -> u32 {
+    // ユークリッドの互除法で解く
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
+#[test]
+fn test_gcd() {
+    assert_eq!(9, gcd(9, 27));
+    assert_eq!(9, gcd(27, 18));
+    assert_eq!(1, gcd(26, 27));
+}
