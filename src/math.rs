@@ -23,7 +23,7 @@ fn test_sum_of_multiple() {
     assert_eq!(18, sum_of_mutiple(3, 3));
 }
 
-/// 整数 a, b の最大公約数を求める
+/// 整数 `a` , `b` の最大公約数を求める
 pub fn gcd(a: u32, b: u32) -> u32 {
     // ユークリッドの互除法で解く
     if b == 0 {
@@ -38,4 +38,14 @@ fn test_gcd() {
     assert_eq!(9, gcd(9, 27));
     assert_eq!(9, gcd(27, 18));
     assert_eq!(1, gcd(26, 27));
+}
+
+/// 整数 `a` , `b` の最小公倍数を求める
+pub fn lcm(a: u32, b: u32) -> u32 {
+    a * b / gcd(a, b)
+}
+
+#[test]
+fn test_ldm() {
+    assert_eq!(15, lcm(3, 5));
 }

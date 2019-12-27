@@ -1,6 +1,6 @@
-//! 与えられた2つの整数の最大公約数を求めるサンプルコード
+//! 与えられた2つの整数の最小公倍数を求めるサンプルコード
 
-use rust_callenge::math::gcd;
+use rust_callenge::math::lcm;
 
 mod common;
 use common::read_u32;
@@ -9,6 +9,6 @@ pub fn main() {
     let a = read_u32("value1");
     let b = read_u32("value2");
     
-    let result = gcd(a, b);
+    let result = lcm(a, b);
     println!("result = {}", result);
 }
