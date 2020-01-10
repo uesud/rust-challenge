@@ -59,27 +59,22 @@ fn prime(n: u32) -> Vec<u32> {
     let mut v = (2..=n).rev().collect::<Vec<u32>>();
     let mut p = Vec::with_capacity(limit as usize);
 
-    loop {
-        match v.pop() {
-            Some(x) => {
-                // xを素数リストに加える
-                p.push(x);
+    while let Some(x) = v.pop() {
+        // xを素数リストに加える
+        p.push(x);
 
-                // xの倍数をvから除外する
-                for i in (0..v.len()).rev() {
-                    if v[i] % x == 0 {
-                        v.remove(i);
-                    }
+        // xの倍数をvから除外する
+        for i in (0..v.len()).rev() {
+            if v[i] % x == 0 {
+                v.remove(i);
                 }
+            }
 
-                // 閾値まできたら探索を打ち切り、vの残りを素数リストに加える
-                if x > limit {
-                    v.reverse();
-                    p.extend(v);
-                    break;    
-                }
-            },
-            None => break,
+        // 閾値まできたら探索を打ち切り、vの残りを素数リストに加える
+        if x > limit {
+            v.reverse();
+            p.extend(v);
+            break;    
         }
     }
 
