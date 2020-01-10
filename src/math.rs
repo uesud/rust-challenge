@@ -106,3 +106,22 @@ fn test_largest_prime() {
     assert_eq!(largest_prime(3), Some(2));
     assert_eq!(largest_prime(3572), Some(3571));
 }
+
+// 与えられた `n` より小さな素数からセクシー素数になる組のリストを返す
+pub fn sexy_prime_pair(n: u32) -> Vec<(u32, u32)> {
+    let mut v = Vec::new();
+    let p = prime(n);
+    for x in p.iter() {
+        if p.contains(&(x + 6)) {
+            v.push((*x, x+6));
+        }
+    }
+
+    v
+}
+
+#[test]
+fn test_sexy_prime_pair() {
+    assert_eq!(sexy_prime_pair(10), []);
+    assert_eq!(sexy_prime_pair(20), [(5,11), (7,13), (11,17), (13,19)]);
+}
