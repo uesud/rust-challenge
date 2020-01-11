@@ -244,3 +244,29 @@ fn test_prime_factorization() {
     assert_eq!(prime_factorization(7), [(7,1)]);
     assert_eq!(prime_factorization(12), [(2,2), (3,1)]);
 }
+
+/// `b` をグレイコードにエンコードする
+pub fn binary_to_gray(b: u8) -> u8 {
+    b ^ (b >> 1)
+}
+
+#[test]
+fn test_binary_to_gray() {
+    assert_eq!(binary_to_gray(0b0101), 0b0111);
+}
+
+// `g` をグレイコードからデコードする
+pub fn gray_to_binary(g: u8) -> u8 {
+    let mut mask = g >> 1;
+    let mut b = g;
+    while mask != 0 {
+        b ^= mask;
+        mask >>= 1;
+    }
+    b
+}
+
+#[test]
+fn test_gray_to_binary() {
+    assert_eq!(gray_to_binary(0b0111), 0b0101);
+}
