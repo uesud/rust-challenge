@@ -181,3 +181,31 @@ pub fn amicable_numbers(upper_limit: u32) -> Vec<(u32, u32)> {
 fn test_amicable_numbers() {
     assert_eq!(amicable_numbers(3000), [(220,284), (1184,1210), (2620,2924)]);
 }
+
+/// 3桁のアームストロング数(ナルシシスト数)のリストを返す
+pub fn narcissistic_number_3() -> Vec<u32> {
+    // 3桁決め打ちで100から999まで探索する。
+    let mut v = Vec::new();
+
+    for i100 in 1..10u32 {
+        let x100 = i100.pow(3);
+        for i10 in 0..10u32 {
+            let x10 = i10.pow(3);
+            for i1 in 0..10u32 {
+                let x1 = i1.pow(3);
+
+                let n = i100 * 100 + i10 * 10 + i1;
+                if n == x100 + x10 + x1  {
+                    v.push(n);
+                }
+            }
+        }
+    }
+
+    v
+}
+
+#[test]
+fn test_narcissistic_number_3() {
+    assert_eq!(narcissistic_number_3(), [153, 370, 371, 407]);
+}
