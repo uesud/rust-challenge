@@ -107,7 +107,7 @@ fn test_largest_prime() {
     assert_eq!(largest_prime(3572), Some(3571));
 }
 
-// 与えられた `n` より小さな素数からセクシー素数になる組のリストを返す
+/// 与えられた `n` より小さな素数からセクシー素数になる組のリストを返す
 pub fn sexy_prime_pair(n: u32) -> Vec<(u32, u32)> {
     let mut v = Vec::new();
     let p = prime(n);
@@ -124,4 +124,43 @@ pub fn sexy_prime_pair(n: u32) -> Vec<(u32, u32)> {
 fn test_sexy_prime_pair() {
     assert_eq!(sexy_prime_pair(10), []);
     assert_eq!(sexy_prime_pair(20), [(5,11), (7,13), (11,17), (13,19)]);
+}
+
+/// 与えられた `n` の約数(自身は含まない)のリストを返す
+fn divisors(n: u32) -> Vec<u32> {
+    let limit = n / 2;
+    let mut d = Vec::with_capacity(limit as usize);
+
+    for i in 1..=limit {
+        if n % i == 0 {
+            d.push(i);
+        }
+    }
+
+    d
+}
+
+#[test]
+fn test_divisors() {
+    assert_eq!(divisors(7), [1]);
+    assert_eq!(divisors(15), [1, 3, 5]);
+}
+
+/// 与えられた上限 `upper_limit` までの過剰数のリストを返す
+pub fn abundant_numbers(upper_limit: u32) -> Vec<u32> {
+    let mut v = Vec::new();
+
+    for i in 1..upper_limit {
+        let s:u32 = divisors(i).iter().sum();
+        if s > i {
+            v.push(i);
+        }
+    }
+
+    v
+}
+
+#[test]
+fn test_abundant_numbers() {
+    assert_eq!(abundant_numbers(30), [12, 18, 20, 24]);
 }
