@@ -209,3 +209,38 @@ pub fn narcissistic_number_3() -> Vec<u32> {
 fn test_narcissistic_number_3() {
     assert_eq!(narcissistic_number_3(), [153, 370, 371, 407]);
 }
+
+/// 与えられた `n` を素因数分解分解して (素数, 冪数) のリストを返す
+pub fn prime_factorization(n: u32) -> Vec<(u32, u32)> {
+    // n より小さい素数で順に冪数を求めていく。
+
+    let mut v = Vec::new();
+
+    let mut x = n;
+    for p in prime(n) {
+        let mut a = 0;        
+        while x % p == 0 {            
+            a += 1;
+            x /= p;
+        }
+
+        if a > 0 {
+            v.push((p, a));
+        }
+    }
+
+    // n が素数か1なら自分自身を返す
+    if n > 0 && v.len() == 0 {
+        v.push((n, 1));
+    }
+
+    v
+}
+
+#[test]
+fn test_prime_factorization() {
+    assert_eq!(prime_factorization(0), []);    
+    assert_eq!(prime_factorization(1), [(1,1)]);
+    assert_eq!(prime_factorization(7), [(7,1)]);
+    assert_eq!(prime_factorization(12), [(2,2), (3,1)]);
+}
