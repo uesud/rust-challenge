@@ -126,24 +126,24 @@ fn test_sexy_prime_pair() {
     assert_eq!(sexy_prime_pair(20), [(5,11), (7,13), (11,17), (13,19)]);
 }
 
-/// 与えられた `n` の約数(自身は含まない)のリストを返す
-fn divisors(n: u32) -> Vec<u32> {
+/// 与えられた `n` の約数(自身は含まない)の総和を返す
+fn sum_of_divisors(n: u32) -> u32 {
     let limit = n / 2;
-    let mut d = Vec::with_capacity(limit as usize);
+    let mut s: u32 = 0;
 
     for i in 1..=limit {
         if n % i == 0 {
-            d.push(i);
+            s += i;
         }
     }
 
-    d
+    s
 }
 
 #[test]
 fn test_divisors() {
-    assert_eq!(divisors(7), [1]);
-    assert_eq!(divisors(15), [1, 3, 5]);
+    assert_eq!(sum_of_divisors(7), 1);
+    assert_eq!(sum_of_divisors(15), 1+3+5);
 }
 
 /// 与えられた上限 `upper_limit` までの過剰数のリストを返す
@@ -151,8 +151,7 @@ pub fn abundant_numbers(upper_limit: u32) -> Vec<u32> {
     let mut v = Vec::new();
 
     for i in 1..upper_limit {
-        let s:u32 = divisors(i).iter().sum();
-        if s > i {
+        if sum_of_divisors(i) > i {
             v.push(i);
         }
     }
@@ -163,4 +162,22 @@ pub fn abundant_numbers(upper_limit: u32) -> Vec<u32> {
 #[test]
 fn test_abundant_numbers() {
     assert_eq!(abundant_numbers(30), [12, 18, 20, 24]);
+}
+
+/// 与えられた上限 `upper_limit` までの友愛数の組のリストを返す
+pub fn amicable_numbers(upper_limit: u32) -> Vec<(u32, u32)> {
+    let mut v = Vec::new();
+    for i in 1..upper_limit {
+        let s = sum_of_divisors(i);
+        if s > i && sum_of_divisors(s) == i {
+            v.push((i, s));
+        }
+    }
+
+    v
+}
+
+#[test]
+fn test_amicable_numbers() {
+    assert_eq!(amicable_numbers(3000), [(220,284), (1184,1210), (2620,2924)]);
 }
