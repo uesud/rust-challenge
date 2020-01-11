@@ -9,7 +9,7 @@ pub fn main() {
     let n = read_u32("n");
 
     let mut is_first = true;
-    let mut txt = "".to_string();
+    let mut txt = String::new();
     for (p, a) in prime_factorization(n) {
         if is_first {
             is_first = false;

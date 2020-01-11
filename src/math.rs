@@ -270,3 +270,31 @@ pub fn gray_to_binary(g: u8) -> u8 {
 fn test_gray_to_binary() {
     assert_eq!(gray_to_binary(0b0111), 0b0101);
 }
+
+/// 与えられた 'n' をローマ数字に変換する
+pub fn num_to_roman(n: u32) -> String {
+
+    let literal = [
+        (1000, "M"), (900, "CM"), (500, "D"), (400, "CD"), 
+        (100, "C"), (90, "XC"), (50, "L"), (40, "XL"),
+        (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), 
+        (1, "I")
+    ];
+
+    let mut num = n;
+    let mut roman = String::new();
+
+    for l in literal.iter() {
+        while num >= l.0 {
+            roman.push_str(l.1);
+            num -= l.0;
+        }
+    }
+
+    roman
+}
+
+#[test]
+fn test_num_to_roman() {
+    assert_eq!(num_to_roman(3999), "MMMCMXCIX");
+}
