@@ -298,3 +298,61 @@ pub fn num_to_roman(n: u32) -> String {
 fn test_num_to_roman() {
     assert_eq!(num_to_roman(3999), "MMMCMXCIX");
 }
+
+/// 与えられた数 `n` のコラッツ数列の長さを返す。
+/// 途中の計算過程は `counts` へキャッシュする。
+/// `counts[n]` が、数 `n` のコラッツ数列長となる。
+/// `counts` は任意長さが指定可能で、範囲を超える分は都度計算される。
+fn count_collatz(n: u64, counts: &mut [u32]) -> u32 {
+    if n < counts.len() as u64 {
+        // 一度計算した値をキャッシュして再利用する
+        if counts[n as usize] == 0 {
+            if n == 1 {
+                counts[n as usize] = 1;
+            } else if n % 2 == 0 {
+                counts[n as usize] = count_collatz(n / 2, counts) + 1;
+            } else {
+                counts[n as usize] = count_collatz(3 * n + 1, counts) + 1;
+            }
+        }
+        counts[n as usize]
+    } else {
+        // キャッシュサイズより大きい数は都度計算する
+        if n == 1 {
+            1
+        } else if n % 2 == 0 {
+            count_collatz(n / 2, counts) + 1
+        } else {
+            count_collatz(3 * n + 1, counts) + 1
+        }    
+    }
+}
+
+#[test]
+fn test_count_collatz() {
+    let mut counts = vec![0; 14];
+    assert_eq!(count_collatz(13, &mut counts), 10);
+}
+
+/// 1,000,000までの数のうち、(最長コラッツ数列になる数, その数列の長さ) の組を返す
+pub fn max_len_of_collatz_1_000_000() -> (u32, u32) {
+    let mut counts = vec![0; 1_000_001];
+
+    let mut max_count = 0;
+    let mut max_index = 0;
+
+    for i in 1..1_000_001 {
+        let count = count_collatz(i, &mut counts);
+        if count > max_count {
+            max_count = count;
+            max_index = i;
+        }
+    }
+
+    (max_index as u32, max_count)
+}
+
+#[test]
+fn test_max_len_of_collatz_1_000_000() {
+    assert_eq!(max_len_of_collatz_1_000_000(), (837799, 525));
+}
