@@ -356,3 +356,25 @@ pub fn max_len_of_collatz_1_000_000() -> (u32, u32) {
 fn test_max_len_of_collatz_1_000_000() {
     assert_eq!(max_len_of_collatz_1_000_000(), (837799, 525));
 }
+
+/// (だいたい)小数点以下 `n` の精度で円周率を計算する (Gauss-Lagendre algorithm)
+pub fn pi_gauss_legendre(n: u32) -> f64 {
+    let mut a_0 = 1f64;
+    let mut b_0 = 1f64 / 2f64.sqrt();
+    let mut t_0 = 1f64 / 4f64;
+    let mut p_0 = 1f64;
+
+    for _ in 0..=(n as f64).log2().ceil() as u32 {
+        let a_1 = (a_0 + b_0) / 2f64;
+        let b_1 = (a_0 * b_0).sqrt();
+        let t_1 = t_0 - p_0 * (a_0 - a_1) * (a_0 - a_1);
+        let p_1 = 2f64 * p_0;
+
+        a_0 = a_1;
+        b_0 = b_1;
+        t_0 = t_1;
+        p_0 = p_1;
+    }
+
+    (a_0 + b_0) * (a_0 + b_0) / t_0 / 4f64
+}
