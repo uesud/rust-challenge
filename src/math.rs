@@ -1,5 +1,7 @@
 //! Chapter 1. 数学の問題
 
+use std;
+
 /// 与えられた上限 `upper_limit` までの3または5で割り切れる正の整数の総和を求める。
 pub fn sum_of_naturals_divisible_by_3_5(upper_limit: u32) -> u64 {
     // 3の倍数の総和と5の倍数の総和から、15の倍数の総和を引く。    
@@ -377,4 +379,70 @@ pub fn pi_gauss_legendre(n: u32) -> f64 {
     }
 
     (a_0 + b_0) * (a_0 + b_0) / t_0 / 4f64
+}
+
+/// ISBN-10 パースエラー
+#[derive(Debug, PartialEq)]
+pub enum Isbn10ParseError {
+    /// 不正な文字が含まれている
+    InvalidCharacter(usize),
+    /// ISBN-10 フォーマットエラー (10桁の数値列になっていない)
+    InvalidLength,
+    /// チェックディジットが一致しない
+    InvalidNumber,
+}
+
+/// 与えられたISBN-10形式の文字列を数値列に変換する
+pub fn parse_isbn10(isbn: &str) -> Result<Vec<u32>, Isbn10ParseError> {
+    use std::str::from_utf8;
+
+    let mut code = Vec::new();
+
+    let isbnbytes = isbn.as_bytes();
+    for pos in 0..isbnbytes.len() {
+        match isbnbytes[pos] {
+            b'0'..=b'9' => code.push(from_utf8(&isbnbytes[pos..=pos]).unwrap().parse().unwrap()),
+            b'x' | b'X' => {
+                if code.len() == 9 {
+                    code.push(10);
+                } else {
+                    return Err(Isbn10ParseError::InvalidCharacter(pos));
+                }
+            },
+            c => {
+                if c != b'-' {
+                    return Err(Isbn10ParseError::InvalidCharacter(pos));
+                }
+            },
+        }
+    }
+
+    if code.len() != 10 {
+        return Err(Isbn10ParseError::InvalidLength);
+    }
+
+    let mut check = 0;
+    for n in 0..9 {
+        check += code[n] * (10 - n as u32);
+    }
+    check = 11 - check % 11;
+    if check == 11 {
+        check = 0;
+    }
+
+    if check != code[9] {
+        return Err(Isbn10ParseError::InvalidNumber);
+    }
+    
+    Ok(code)
+}
+
+#[test]
+fn test_parse_isbn10() {    
+    assert_eq!(parse_isbn10("4-297-10559-4").unwrap(), [4,2,9,7,1,0,5,5,9,4]);
+    assert_eq!(parse_isbn10("4-297-11559-x").unwrap(), [4,2,9,7,1,1,5,5,9,10]);
+    assert_eq!(parse_isbn10("4-297-11559-X").unwrap(), [4,2,9,7,1,1,5,5,9,10]);
+    assert_eq!(parse_isbn10("4-297-10559-3").unwrap_err(), Isbn10ParseError::InvalidNumber);
+    assert_eq!(parse_isbn10("4-29X-10559-4").unwrap_err(), Isbn10ParseError::InvalidCharacter(4));
+    assert_eq!(parse_isbn10("4-297-1055-4").unwrap_err(), Isbn10ParseError::InvalidLength);
 }
