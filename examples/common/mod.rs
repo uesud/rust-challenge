@@ -30,3 +30,23 @@ pub fn read_string(s: &str) -> String {
     // 改行文字を削ってから返す
     input_text.replace("\n", "")
 }
+
+use rust_callenge::language_features::{Ipv4, ParseIpv4Error};
+
+/// 標準入力からIPv4(ドット形式)を読み取る
+/// 失敗したらエラーメッセージを表示する
+#[allow(dead_code)]
+pub fn read_ipv4(s: &str) -> Option<Ipv4> {
+    let ipv4_str = read_string(s);
+    match Ipv4::parse(&ipv4_str) {
+        Ok(ipv4) => Some(ipv4),
+        Err(ParseIpv4Error::InvalidValue(s)) => {
+            println!("Invalid value: {}", s);
+            None
+        },
+        Err(ParseIpv4Error::InvalidFormat) => {
+            println!("Invalid input");
+            None
+        },
+    }
+}
