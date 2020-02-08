@@ -308,3 +308,16 @@ pub mod array2d {
         assert_eq!(vec![&11,&12,&13,&21,&22,&23], t);
     }
 }
+
+/// 任意個数の要素から最小値を求めるマクロ
+#[macro_export]
+macro_rules! my_min {
+    ( $x1:expr, $x2:expr ) => { if $x1 < $x2 { $x1 } else { $x2 } };
+    ( $x1:expr, $x2:expr, $(  $x3:expr ),+ ) => { my_min!($x1, my_min!($x2, $( $x3 ),* )) };
+}
+
+#[test]
+fn test_my_min() {
+    assert_eq!(my_min!(5, 2, 1, 3), 1);
+    assert_eq!(my_min!(1.0f64, -2.1f64, 0f64), -2.1f64);
+}
