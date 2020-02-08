@@ -1,6 +1,6 @@
 //! 与えられた整数を素因数分解して表示するサンプル
 
-use rust_callenge::math::prime_factorization;
+use rust_challenge::math::prime_factorization;
 
 mod common;
 use common::read_u32;

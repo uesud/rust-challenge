@@ -1,5 +1,5 @@
 [package]
-name = "rust-callenge"
+name = "rust-challenge"
 version = "0.1.0"
 authors = ["uesud <uesud@live.jp>"]
 edition = "2018"

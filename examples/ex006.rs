@@ -1,6 +1,6 @@
 //! 与えられた整数より小さな過剰数のリストを返すサンプルコード
 
-use rust_callenge::math::abundant_numbers;
+use rust_challenge::math::abundant_numbers;
 
 mod common;
 use common::read_u32;

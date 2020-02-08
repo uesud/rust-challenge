@@ -1,6 +1,6 @@
 //! 与えられた整数より小さな素数からセクシー素数の組を返すサンプルコード
 
-use rust_callenge::math::sexy_prime_pair;
+use rust_challenge::math::sexy_prime_pair;
 
 mod common;
 use common::read_u32;

@@ -31,7 +31,7 @@ pub fn read_string(s: &str) -> String {
     input_text.replace("\n", "")
 }
 
-use rust_callenge::language_features::{Ipv4, ParseIpv4Error};
+use rust_challenge::language_features::{Ipv4, ParseIpv4Error};
 
 /// 標準入力からIPv4(ドット形式)を読み取る
 /// 失敗したらエラーメッセージを表示する

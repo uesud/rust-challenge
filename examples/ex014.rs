@@ -1,6 +1,6 @@
 //! 与えられた文字列が適切なISBN-10かチェックするサンプル
 
-use rust_callenge::math::{parse_isbn10, Isbn10ParseError};
+use rust_challenge::math::{parse_isbn10, Isbn10ParseError};
 
 mod common;
 use common::read_string;

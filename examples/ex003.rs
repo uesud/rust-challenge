@@ -1,6 +1,6 @@
 //! 与えられた2つの整数の最小公倍数を求めるサンプルコード
 
-use rust_callenge::math::lcm;
+use rust_challenge::math::lcm;
 
 mod common;
 use common::read_u32;

@@ -1,6 +1,6 @@
 //! 与えられた2つの整数の最大公約数を求めるサンプルコード
 
-use rust_callenge::math::gcd;
+use rust_challenge::math::gcd;
 
 mod common;
 use common::read_u32;

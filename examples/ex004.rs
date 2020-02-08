@@ -1,6 +1,6 @@
 //! 与えられた整数より小さな最大の素数を返すサンプルコード
 
-use rust_callenge::math::largest_prime;
+use rust_challenge::math::largest_prime;
 
 mod common;
 use common::read_u32;

@@ -1,6 +1,6 @@
 //! 5bitの数値→グレイコード→グレイコード復号を出力するサンプル
 
-use rust_callenge::math::{binary_to_gray, gray_to_binary};
+use rust_challenge::math::{binary_to_gray, gray_to_binary};
 
 pub fn main() {
     println!("Number,\tBinary,\tGray,\tDecorded");

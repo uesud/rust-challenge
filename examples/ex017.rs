@@ -1,6 +1,6 @@
 //! 2次元配列を扱うサンプル
 
-use rust_callenge::language_features::array2d::Array2d;
+use rust_challenge::language_features::array2d::Array2d;
 
 pub fn main() {
     let mut ma = Array2d::new(2,3);
