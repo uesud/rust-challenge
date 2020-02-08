@@ -105,3 +105,206 @@ fn test_ipv4_rangeiter() {
             Ipv4::from_dot_decimals(1, 2, 3, 6)
         ]);
 }
+
+
+pub mod array2d {
+
+    use std::ops;
+    use std::iter;
+
+    /// 2次元配列
+    #[derive(Debug)]
+    pub struct Array2d<T> {
+        i_max: usize,
+        j_max: usize,
+        values: Box<[T]>,
+    }
+
+    impl<T> Array2d<T> where T: Clone {
+
+        /// サイズ i x j の2次元配列を作る
+        pub fn new(i: usize, j: usize) -> Self where T: Default {
+            Array2d {
+                i_max: i,
+                j_max: j,
+                values: vec![Default::default(); i * j].into_boxed_slice()
+            }
+        }
+
+        /// 座標(i, j)の要素にアクセスする
+        pub fn at(&self, i: usize, j: usize) -> Option<&T> {
+            if i < self.i_max && j < self.j_max {
+                Some(&self.values[i * self.j_max + j])
+            } else {
+                None
+            }
+        }
+
+        /// 座標(i, j)の要素にアクセスする
+        pub fn at_mut(&mut self, i: usize, j: usize) -> Option<&mut T> {
+            if i < self.i_max && j < self.j_max {
+                Some(&mut self.values[i * self.j_max + j])
+            } else {
+                None
+            }
+        }
+
+        /// データ列を取得する
+        pub fn data(&self) -> &[T] {
+            &self.values
+        }
+
+        /// データ列を取得する
+        pub fn data_mut(&mut self) -> &mut [T] {
+            &mut(self.values)
+        }
+
+        /// 全ての要素に一律に値を設定する
+        pub fn fill(&mut self, value: T) {
+            for i in 0..self.values.len() {
+                self.values[i] = value.clone();
+            }
+        }
+    }
+
+    impl<T> ops::Index<(usize,usize)> for Array2d<T> {
+        type Output = T;
+
+        fn index(&self, index: (usize,usize)) -> &Self::Output {
+            &self.values[index.0 * self.j_max + index.1]
+        }
+    }
+
+    impl<T> ops::IndexMut<(usize,usize)> for Array2d<T> {
+
+        fn index_mut(&mut self, index: (usize,usize)) -> &mut Self::Output {
+            &mut(self.values[index.0 * self.j_max + index.1])
+        }
+    }
+
+    /// Array2d<T> イテレーター
+    pub struct IntoIter<T> {
+        curr: usize,
+        array2d: Array2d<T>,
+    }
+
+    impl<T> iter::Iterator for IntoIter<T> 
+        where T: Clone {
+        type Item = T;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            let curr = self.curr;
+            if curr < self.array2d.values.len() {
+                self.curr += 1;
+                Some(self.array2d.values[curr].clone())
+            } else {
+                None
+            }
+        }
+    }
+
+    /// &Array2d イテレーター
+    pub struct Iter<'a, T> {
+        curr: usize,
+        array2d: &'a Array2d<T>,
+    }
+
+    impl<'a, T> iter::Iterator for Iter<'a, T> 
+    {
+        type Item = &'a T;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            let curr = self.curr;
+            if curr < self.array2d.values.len() {
+                self.curr += 1;
+                Some(&self.array2d.values[curr])
+            } else {
+                None
+            }
+        }
+    }
+
+    impl<T> iter::IntoIterator for Array2d<T> 
+        where T: Clone {
+        type Item = T;
+        type IntoIter = IntoIter<T>;
+
+        fn into_iter(self) -> Self::IntoIter {
+            IntoIter {
+                curr: 0,
+                array2d: self
+            }
+        }
+    }
+
+    impl<'a, T> iter::IntoIterator for &'a Array2d<T> where T: Clone {
+        type Item = &'a T;
+        type IntoIter = Iter<'a, T>;
+    
+        fn into_iter(self) -> Self::IntoIter {
+            Iter {
+                curr: 0,
+                array2d: self
+            }
+        }
+    }
+
+    #[test]
+    fn test_array2d() {
+        let mut ma = Array2d::new(2, 3);
+
+        for i in 0..2 {
+            for j in 0..3 {
+                ma[(i,j)] = ((i+1) * 10 + (j+1)) as u8;
+            }
+        }
+        assert_eq!([11,12,13,21,22,23], ma.data());   
+        assert_eq!(Some(&12), ma.at(0, 1));
+        assert_eq!(None, ma.at(2, 2));
+
+        {
+            let a = &ma;
+            assert_eq!([11,12,13,21,22,23], a.data());
+            assert_eq!(Some(&12), a.at(0, 1));
+            assert_eq!(None, a.at(2, 2));
+                
+            //a[(1,1)] = 10;
+            //a.fill(255);
+        }
+    
+        ma.fill(255);
+        assert_eq!([255,255,255,255,255,255], ma.data());
+    }
+
+    #[test]
+    fn test_array2d_intoiter() {
+        let mut ma = Array2d::new(2,3);
+        for i in 0..2 {
+            for j in 0..3 {
+                ma[(i,j)] = ((i+1) * 10 + (j+1)) as u8;
+            }
+        }
+
+        let mut t = Vec::new();
+        for v in ma {
+            t.push(v);
+        }
+        assert_eq!(vec![11,12,13,21,22,23], t);
+    }
+
+    #[test]
+    fn test_array2d_iter() {
+        let mut ma = Array2d::new(2,3);
+        for i in 0..2 {
+            for j in 0..3 {
+                ma[(i,j)] = ((i+1) * 10 + (j+1)) as u8;
+            }
+        }
+
+        let mut t = Vec::new();
+        for v in &ma {
+            t.push(v);
+        }
+        assert_eq!(vec![&11,&12,&13,&21,&22,&23], t);
+    }
+}
