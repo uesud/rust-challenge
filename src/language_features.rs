@@ -335,21 +335,50 @@ fn test_push_back() {
     assert_eq!(v, vec![1,2,3,4,5]);
 }
 
+/// 与えられた任意個数の要素のどれかがコンテナに含まれているかチェックするマクロ
+#[macro_export]
+macro_rules! contains_any {
+    ( $vec:expr, $x:expr ) => { $vec.contains($x) };
+    ( $vec:expr, $x1:expr, $( $x2:expr ),+ ) => { 
+        contains_any!($vec, $x1) || contains_any!($vec, $( $x2 ),+) 
+    };
+}
 
+#[test]
+fn test_containts_any() {
+    let v = vec![3,4,5];
+    assert!(contains_any!(v, &1, &4));
+    assert!(!contains_any![v, &1, &2]);
+}
 
+/// 与えられた任意個数の要素のすべてがコンテナに含まれているかチェックするマクロ
+#[macro_export]
+macro_rules! contains_all {
+    ( $vec:expr, $x:expr ) => { $vec.contains($x) };
+    ( $vec:expr, $x1:expr, $( $x2:expr ),+ ) => {
+        contains_all!($vec, $x1) && contains_all!($vec, $( $x2 ),+) 
+    };
+}
 
+#[test]
+fn test_contains_all() {
+    let v = vec![3,4,5];
+    assert!(contains_all!(v, &3, &4));
+    assert!(!contains_all!(v, &2, &3, &4))
+}
 
+/// 与えられた任意個数の要素のすべてがコンテナに含まれていないことをチェックするマクロ
+#[macro_export]
+macro_rules! contains_none {
+    ( $vec:expr, $x:expr ) => { !$vec.contains($x) };
+    ( $vec:expr, $x1:expr, $( $x2:expr ),+ ) => {
+        contains_none!($vec, $x1) && contains_none!($vec, $( $x2 ),+)
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#[test]
+fn test_contains_none() {
+    let v = vec![3,4,5];
+    assert!(contains_none!(v, &1, &2));
+    assert!(!contains_none!(v, &4));
+}
