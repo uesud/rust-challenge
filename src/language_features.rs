@@ -321,3 +321,35 @@ fn test_my_min() {
     assert_eq!(my_min!(5, 2, 1, 3), 1);
     assert_eq!(my_min!(1.0f64, -2.1f64, 0f64), -2.1f64);
 }
+
+/// 任意個数の要素をコンテナに追加するマクロ
+#[macro_export]
+macro_rules! push_back {
+    ( $vec:expr, $( $x:expr ),+ ) => { $( $vec.push($x); )+ };
+}
+
+#[test]
+fn test_push_back() {
+    let mut v = vec![1,2,3];
+    push_back!(v, 4, 5);
+    assert_eq!(v, vec![1,2,3,4,5]);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
