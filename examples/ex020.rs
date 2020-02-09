@@ -10,6 +10,6 @@ pub fn main() {
     println!("contains_all: {}", contains_all!(a, &1, &3, &5, &6));
 
     let s = [0, 1, 2, 3, 4, 5, 6, 7];
-    let s1 = &l[1..7];
+    let s1 = &s[1..7];
     println!("contains_none: {}", contains_none!(s1, &0, &6));
 }
