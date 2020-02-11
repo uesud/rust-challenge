@@ -382,3 +382,140 @@ fn test_contains_none() {
     assert!(contains_none!(v, &1, &2));
     assert!(!contains_none!(v, &4));
 }
+
+pub mod tempreture {
+
+    /// 温度
+    #[derive(Debug)]
+    pub enum Scale {
+        /// 摂氏
+        Celsius(f64),
+        /// 華氏
+        Fahrenheit(f64),
+        /// ケルビン
+        Kelvin(f64),
+    }
+    
+    use Scale::*;
+
+    impl Scale {
+        /// 任意の温度単位から摂氏単位に変換する
+        pub fn celsius(scale: &Scale) -> Scale {
+            match *scale {
+                Celsius(c) => Celsius(c),
+                Fahrenheit(f) => Celsius((f - 32f64) * 5f64 / 9f64),
+                Kelvin(k) => Celsius(k - 273.15f64),
+            }
+        }
+
+        /// 任意の温度単位から華氏に変換する
+        pub fn fahrenheit(scale: &Scale) -> Scale {
+            match *scale {
+                Celsius(c) => Fahrenheit(c * 9f64 / 5f64 + 32f64),
+                Fahrenheit(f) => Fahrenheit(f),
+                Kelvin(k) => Fahrenheit((k - 273.15f64) * 9f64 / 5f64 + 32f64),
+            }
+        }
+
+        /// 任意の温度単位からケルビンに変換する
+        pub fn kelvin(scale: &Scale) -> Scale {
+            match *scale {
+                Celsius(c) => Kelvin(c + 273.15f64),
+                Fahrenheit(f) => Kelvin((f - 32f64) * 5f64 / 9f64 + 273.15),
+                Kelvin(k) => Kelvin(k),
+            }
+        }
+
+        /// その単位における温度値を取得する
+        pub fn value(&self) -> f64 {
+            match *self {
+                Celsius(c) => c,
+                Fahrenheit(f) => f,
+                Kelvin(k) => k,
+            }
+        }
+    }
+
+    use std::fmt;
+    impl fmt::Display for Scale {
+        fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+            match self {
+                Celsius(c) => write!(fmt, "{} [°C]", c),
+                Fahrenheit(f) => write!(fmt, "{} [°F]", f),
+                Kelvin(k) => write!(fmt, "{} [K]", k),
+            }
+        }
+    }
+
+    use std::cmp;
+    impl cmp::PartialEq for Scale {
+        fn eq(&self, other: &Self) -> bool {
+            // 左辺値の単位を基準に比較する
+            match *self {
+                Celsius(c) => c == Scale::celsius(other).value(),
+                Fahrenheit(f) => f == Scale::fahrenheit(other).value(),
+                Kelvin(k) => k == Scale::kelvin(other).value(),
+            }
+        }
+    }
+
+    impl cmp::PartialOrd for Scale {
+        fn partial_cmp(&self, other: &Self) -> Option<cmp::Ordering> {
+            // 左辺値の単位を基準に比較する
+            match *self {
+                Celsius(c) => c.partial_cmp(&Scale::celsius(other).value()),
+                Fahrenheit(f) => f.partial_cmp(&Scale::fahrenheit(other).value()),
+                Kelvin(k) => k.partial_cmp(&Scale::kelvin(other).value()),
+            }
+        }
+    }
+
+    #[test]
+    fn test_scale_celsius() {
+        let c = Scale::Celsius(0f64);
+
+        let f = Scale::fahrenheit(&c);
+        assert_eq!(f.value(), 32f64);
+        assert_eq!(c, f);
+
+        let k = Scale::kelvin(&c);
+        assert_eq!(k.value(), 273.15f64);
+        assert_eq!(c, k);
+    }
+
+    #[test]
+    fn test_scale_fahrenheit() {
+        let f = Scale::Fahrenheit(5f64);
+
+        let c = Scale::celsius(&f);
+        assert_eq!(c.value(), -15f64);
+        assert_eq!(f, c);
+
+        let k = Scale::kelvin(&f);
+        assert_eq!(k.value(), 258.15f64);
+        assert_eq!(f, k);
+    }
+
+    #[test]
+    fn test_scale_kelvin() {
+        let k = Scale::Kelvin(273.15f64);
+
+        let c = Scale::celsius(&k);
+        assert_eq!(c.value(), 0f64);
+        assert_eq!(k, c);
+
+        let f = Scale::fahrenheit(&k);
+        assert_eq!(f.value(), 32f64);
+        assert_eq!(k, f);
+    }
+    
+    #[test]
+    fn test_scale_cmp() {
+        let c = Scale::Celsius(1f64);
+        let f = Scale::fahrenheit(&Scale::Celsius(2f64));
+        let k = Scale::kelvin(&Scale::Celsius(3f64));
+
+        assert!(c < f);
+        assert!(f < k);
+    }
+}
