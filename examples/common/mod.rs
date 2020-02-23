@@ -1,8 +1,9 @@
 //! Example用のユーティリティ
 
-/// 標準入力から数値(u32)を読み取る
-#[allow(dead_code)]
-pub fn read_u32(s: &str) -> u32 {
+/// 標準入力から数値(T型)を読み取る
+fn read_num<T>(s: &str) -> Result<T, T::Err>
+    where T: std::str::FromStr {
+
     use std::io::{stdin, stdout, Write};
 
     let mut stdout = stdout();
@@ -11,8 +12,21 @@ pub fn read_u32(s: &str) -> u32 {
 
     let mut input_text = String::new();    
     stdin().read_line(&mut input_text).unwrap();
-    input_text.trim().parse::<u32>()
-        .expect(&format!("Invalid input. {} must be positive integer.", s))
+    input_text.trim().parse::<T>()
+}
+
+/// 標準入力から数値(u8)を読み取る
+#[allow(dead_code)]
+fn read_u8(s: &str) -> u8 {
+    read_num::<u8>(s)
+        .expect(&format!("Invalid input. {} must be unsigned 8bit number.", s))
+}
+
+/// 標準入力から数値(u32)を読み取る
+#[allow(dead_code)]
+pub fn read_u32(s: &str) -> u32 {
+    read_num::<u32>(s)
+        .expect(&format!("Invalid input. {} must be unsigned 32bit number.", s))
 }
 
 /// 標準入力から文字列を読み取る
