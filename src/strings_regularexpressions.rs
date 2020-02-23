@@ -29,10 +29,12 @@ fn test_bytes_to_string() {
 pub fn string_to_bytes(txt: &str) -> Result<Vec<u8>, Error> {
     
     let mut bytes = Vec::<u8>::new();
-    for i in (0..txt.len()/2).map(|n| n * 2) {
-        match u8::from_str_radix(&txt[i..i+2], 16) {
+    for i in (0..(txt.len()+1)/2).map(|n| n * 2) {
+        let end = if i == txt.len() - 1 { i + 1 } else { i + 2 };
+
+        match u8::from_str_radix(&txt[i..end], 16) {
             Ok(b) => bytes.push(b),
-            Err(_) => return Err(format_err!("Invalid input {}", &txt[i..i+2])),
+            Err(_) => return Err(format_err!("Invalid input {}", &txt[i..end])),
         }
     }
 
