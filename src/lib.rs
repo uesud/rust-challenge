@@ -1,4 +1,5 @@
 #![feature(step_trait)]
+#[macro_use] extern crate failure;
 
 pub mod math;
 pub mod language_features;
