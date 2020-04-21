@@ -45,3 +45,30 @@ pub fn string_to_bytes(txt: &str) -> Result<Vec<u8>, Error> {
 fn test_string_to_bytes() {
     assert_eq!(vec![0xBA, 0xAD, 0xF0, 0x0D], string_to_bytes(&"BAADF00D").unwrap())
 }
+
+/// 文字列をキャピタライズする
+pub fn capitalize(uncaptlized: &str) -> String {
+    uncaptlized.split_whitespace()
+        .map(|word| {
+            let mut w = word.chars().nth(0).unwrap().to_uppercase().to_string();
+            if let Some(n) = word.char_indices().nth(1) {
+                w.push_str(&word[n.0..]);
+            }
+            w
+        })
+        .fold(
+            String::with_capacity(uncaptlized.len()), 
+            |mut s, w| { 
+                s.push_str(&w);
+                if s.len() < uncaptlized.len() - 1 {
+                    s.push(' ');
+                }
+                s
+            }
+        )
+}
+
+#[test]
+fn test_capitalize() {
+    assert_eq!("This Is A Pen.", capitalize(&"this is a pen."));
+}
