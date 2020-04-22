@@ -72,3 +72,23 @@ pub fn capitalize(uncaptlized: &str) -> String {
 fn test_capitalize() {
     assert_eq!("This Is A Pen.", capitalize(&"this is a pen."));
 }
+
+/// 指定した区切り文字で文字列を連結する
+pub fn join_strings(words: Vec<&str>, separator: char) -> String {
+    let mut text = words.iter().fold(
+        String::new(),
+        |mut s, w| {
+            s.push_str(w);
+            s.push(separator);
+            s
+        }
+    );
+    text.pop();
+    text
+}
+
+#[test]
+fn test_join_strings() {
+    assert_eq!("this is an example", join_strings(vec!["this", "is", "an", "example"], ' '));
+    assert_eq!("", join_strings(vec![""], ' '));
+}
