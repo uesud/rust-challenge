@@ -92,3 +92,31 @@ fn test_join_strings() {
     assert_eq!("this is an example", join_strings(vec!["this", "is", "an", "example"], ' '));
     assert_eq!("", join_strings(vec![""], ' '));
 }
+
+/// 区切り文字列集合で文字列をトークンに分割する
+pub fn split_string<'a>(text: &'a str, delimitors: Vec<char>) -> Vec<&'a str> {
+    let mut tokens = Vec::<&'a str>::new();
+    let mut first = 0;
+    let mut last = 0;
+    for ci in text.char_indices() {
+        last = ci.0;
+        if delimitors.contains(&ci.1) {
+            if last > first {
+                tokens.push(&text[first..last]);
+            }
+            first = ci.0 + 1;
+        }
+    }
+    if last >= first {
+        tokens.push(&text[first..last+1]);
+    }
+    tokens
+}
+
+#[test]
+fn test_split() {
+    assert_eq!(vec!["this", "is", "an", "example"], split_string("this,is an.example!!", vec!['!', ' ', ',', '.']));
+    assert_eq!(vec!["ab", "c"], split_string("!!ab!!c!", vec!['!']));
+    assert_eq!(vec!["ab", "c"], split_string("!ab!!c!!", vec!['!']));
+    assert_eq!(vec!["ab", "c", "d"], split_string("!ab!!c!!d", vec!['!']));
+}
